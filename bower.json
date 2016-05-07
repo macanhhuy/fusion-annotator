@@ -1,0 +1,21 @@
+{
+  "name": "fusion-annotator",
+  "version": "1.0.0",
+  "homepage": "https://github.com/macanhhuy/fusion-annotator",
+  "authors": [
+    "Mac Anh Huy"
+  ],
+  "description": "",
+  "main": [
+    "css/annotator.css",
+    "js/annotator.js"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
