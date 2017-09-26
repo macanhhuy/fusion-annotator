@@ -11975,16 +11975,14 @@
          * manage the configuration of a particular annotation application, and are the
          * starting point for most deployments of Annotator.
          */
-        function App() {
+        function App(dragMode) {
             this.modules = [];
             this.registry = new registry.Registry();
-
             this._started = false;
-
             // Register a bunch of default utilities
             this.registry.registerUtility(notification.defaultNotifier,
                 'notifier');
-
+            window.dragMode = dragMode;    
             // And set up default components.
             this.include(authz.acl);
             this.include(identity.simple);
@@ -13182,13 +13180,64 @@
         var Adder = Widget.extend({
 
             constructor: function (options) {
+                this.type = 'adder';
                 Widget.call(this, options);
 
                 this.ignoreMouseup = false;
                 this.annotation = null;
-
                 this.onCreate = this.options.onCreate;
 
+                var self = this;
+                this.element
+                    .on("click." + NS, 'button', function (e) {
+                        self._onClick(e);
+                    })
+                    .on("mousedown." + NS, 'button', function (e) {
+                        self._onMousedown(e);
+                    })
+                    .on("dragend." + NS, 'button', function (e) {
+                        $('.fusion-over').removeClass('fusion-over');
+                    });
+
+                this.document = this.element[0].ownerDocument;
+                $(this.document.body).on("mouseup." + NS, function (e) {
+                    self._onMouseup(e);
+                });
+            },
+            changeDragMode: function() {
+                Widget.prototype.changeDragMode.call(this);
+                this.template = [
+                    '<img src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQ3Ni43MzcgNDc2LjczNyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDc2LjczNyA0NzYuNzM3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCI+CjxnPgoJPGc+CgkJPHBhdGggZD0iTTQ3NS40OTgsMjMyLjI5OGwtMy40MDEtNS4xNDlsLTYzLjU2NS02My41NjVjLTYuMTk4LTYuMTk4LTE2LjMwNC02LjE5OC0yMi40NywwICAgIGMtNi4xOTgsNi4xOTgtNi4xOTgsMTYuMjczLDAsMjIuNDdsMzYuNDIzLDM2LjQyM0gyNTQuMjZWNTQuMjUzbDM2LjQyMywzNi40MjNjNi4xNjYsNi4xOTgsMTYuMjczLDYuMTk4LDIyLjQ3LDAgICAgYzYuMTY2LTYuMTk4LDYuMTY2LTE2LjI3MywwLTIyLjQ3TDI0OS41ODgsNC42NGwtMC4xNTktMC4wOTVsLTQuOTktMy4zMDVMMjM4LjM2OSwwaC0wLjA2NGwtNi4wMDcsMS4yNGwtNC45OSwzLjMwNWwtMC4xOTEsMC4wOTUgICAgbC02My41NjUsNjMuNTY1Yy02LjE5OCw2LjE5OC02LjE5OCwxNi4yNzMsMCwyMi40N3MxNi4yNzMsNi4xOTgsMjIuNDcsMGwzNi40NTUtMzYuNDIzdjE2OC4yMjVINTQuMjUzbDM2LjQyMy0zNi40MjMgICAgYzYuMTk4LTYuMTk4LDYuMTk4LTE2LjI3MywwLTIyLjQ3cy0xNi4yNzMtNi4xOTgtMjIuNDcsMEw0LjY0LDIyNy4xNDlsLTAuMDk1LDAuMTU5bC0zLjMwNSw0Ljk5TDAsMjM4LjM2OXYwLjA2NGwxLjI0LDYuMDA3ICAgIGwzLjMwNSw0Ljk1OGwwLjA5NSwwLjE5MWw2My41NjUsNjMuNTY1YzYuMTk4LDYuMTk4LDE2LjI3Myw2LjE5OCwyMi40NywwYzYuMTk4LTYuMTY2LDYuMTk4LTE2LjI3MywwLTIyLjQ3TDU0LjI1MywyNTQuMjYgICAgaDE2OC4yMjV2MTY4LjIyNWwtMzYuNDIzLTM2LjQyM2MtNi4xOTgtNi4xNjYtMTYuMjczLTYuMTY2LTIyLjQ3LDBjLTYuMTk4LDYuMTk4LTYuMTk4LDE2LjMwNCwwLDIyLjQ3bDYzLjU2NSw2My41NjVsNS4xNDksMy40MzIgICAgbDYuMDA3LDEuMjA4aDAuMDY0bDYuMDctMS4yNGw1LjE0OS0zLjQwMWw2My41NjUtNjMuNTY1YzYuMTY2LTYuMTk4LDYuMTY2LTE2LjMwNCwwLTIyLjQ3Yy02LjE5OC02LjE5OC0xNi4zMDQtNi4xOTgtMjIuNDcsMCAgICBsLTM2LjQyMywzNi40MjNWMjU0LjI2aDE2OC4yMjVsLTM2LjQyMywzNi40MjNjLTYuMTY2LDYuMTY2LTYuMTY2LDE2LjI3MywwLDIyLjQ3YzYuMTk4LDYuMTY2LDE2LjMwNCw2LjE2NiwyMi40NywwICAgIGw2My41NjUtNjMuNTY1bDMuNDMyLTUuMTQ5bDEuMjA4LTYuMDA3di0wLjA2NEw0NzUuNDk4LDIzMi4yOTh6IiBmaWxsPSIjMDA2REYwIi8+Cgk8L2c+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==" draggable="true" class="annotator-adder drag-mode annotator-hide">'
+            ].join('\n');
+                this.element = $(this.template);
+                this.ignoreMouseup = false;
+                this.annotation = null;
+                var self = this;
+                this.element
+                    .on("click." + NS, 'button', function (e) {
+                        self._onClick(e);
+                    })
+                    .on("mousedown." + NS, 'button', function (e) {
+                        self._onMousedown(e);
+                    }).on("dragend." + NS, 'button', function (e) {
+                        $('.fusion-over').removeClass('fusion-over');
+                    });
+
+                this.document = this.element[0].ownerDocument;
+                $(this.document.body).on("mouseup." + NS, function (e) {
+                    self._onMouseup(e);
+                });
+            },
+            changeAddMode: function() {
+                Widget.prototype.changeAddMode.call(this);
+                this.template = [
+                    '<div draggable="true" ondragstart="window.interviewAnnotationDrag(event)" class="annotator-adder add-mode annotator-hide">',
+                        '  <button type="button">' + _t('Annotate') + '</button>',
+                    '</div>'
+                ].join('\n');
+                this.element = $(this.template);
+                this.ignoreMouseup = false;
+                this.annotation = null;
                 var self = this;
                 this.element
                     .on("click." + NS, 'button', function (e) {
@@ -13203,7 +13252,6 @@
                     self._onMouseup(e);
                 });
             },
-
             destroy: function () {
                 this.element.off("." + NS);
                 $(this.document.body).off("." + NS);
@@ -13223,6 +13271,7 @@
             // Returns nothing.
             load: function (annotation, position) {
                 this.annotation = annotation;
+                window.interviewAnnotation = annotation;
                 this.show(position);
             },
 
@@ -13255,6 +13304,8 @@
             // Returns nothing.
             _onMousedown: function (event) {
                 // Do nothing for right-clicks, middle-clicks, etc.
+                var self = this;
+              
                 if (event.which > 1) {
                     return;
                 }
@@ -13292,7 +13343,16 @@
             // Returns nothing.
             _onClick: function (event) {
                 // Do nothing for right-clicks, middle-clicks, etc.
-                if (event.which > 1) {
+                if (event.which > 1 || window.dragMode) {
+                    // var event = new CustomEvent(
+                    //     'createNewAnnotationFinding',
+                    //     {
+                    //         detail: this.annotation,
+                    //         bubbles: true,
+                    //         cancelable: true
+                    //     }
+                    // );
+                    // document.body.dispatchEvent(event);
                     return;
                 }
 
@@ -13304,7 +13364,7 @@
                 // Create a new annotation
                 if (this.annotation !== null && typeof this.onCreate === 'function') {
 //                    huymac 29-2-2016
-//                    this.onCreate(this.annotation, event);
+                //    this.onCreate(this.annotation, event);
                     console.log('call createNewAnnotation');
                      var event = new CustomEvent(
                                     'createNewAnnotation',
@@ -13319,11 +13379,18 @@
             }
         });
 
-        Adder.template = [
-            '<div class="annotator-adder annotator-hide">',
-                '  <button type="button">' + _t('Annotate') + '</button>',
-            '</div>'
-        ].join('\n');
+   
+        if (window.dragMode) {
+            Adder.template = [
+                    '<img src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQ3Ni43MzcgNDc2LjczNyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDc2LjczNyA0NzYuNzM3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCI+CjxnPgoJPGc+CgkJPHBhdGggZD0iTTQ3NS40OTgsMjMyLjI5OGwtMy40MDEtNS4xNDlsLTYzLjU2NS02My41NjVjLTYuMTk4LTYuMTk4LTE2LjMwNC02LjE5OC0yMi40NywwICAgIGMtNi4xOTgsNi4xOTgtNi4xOTgsMTYuMjczLDAsMjIuNDdsMzYuNDIzLDM2LjQyM0gyNTQuMjZWNTQuMjUzbDM2LjQyMywzNi40MjNjNi4xNjYsNi4xOTgsMTYuMjczLDYuMTk4LDIyLjQ3LDAgICAgYzYuMTY2LTYuMTk4LDYuMTY2LTE2LjI3MywwLTIyLjQ3TDI0OS41ODgsNC42NGwtMC4xNTktMC4wOTVsLTQuOTktMy4zMDVMMjM4LjM2OSwwaC0wLjA2NGwtNi4wMDcsMS4yNGwtNC45OSwzLjMwNWwtMC4xOTEsMC4wOTUgICAgbC02My41NjUsNjMuNTY1Yy02LjE5OCw2LjE5OC02LjE5OCwxNi4yNzMsMCwyMi40N3MxNi4yNzMsNi4xOTgsMjIuNDcsMGwzNi40NTUtMzYuNDIzdjE2OC4yMjVINTQuMjUzbDM2LjQyMy0zNi40MjMgICAgYzYuMTk4LTYuMTk4LDYuMTk4LTE2LjI3MywwLTIyLjQ3cy0xNi4yNzMtNi4xOTgtMjIuNDcsMEw0LjY0LDIyNy4xNDlsLTAuMDk1LDAuMTU5bC0zLjMwNSw0Ljk5TDAsMjM4LjM2OXYwLjA2NGwxLjI0LDYuMDA3ICAgIGwzLjMwNSw0Ljk1OGwwLjA5NSwwLjE5MWw2My41NjUsNjMuNTY1YzYuMTk4LDYuMTk4LDE2LjI3Myw2LjE5OCwyMi40NywwYzYuMTk4LTYuMTY2LDYuMTk4LTE2LjI3MywwLTIyLjQ3TDU0LjI1MywyNTQuMjYgICAgaDE2OC4yMjV2MTY4LjIyNWwtMzYuNDIzLTM2LjQyM2MtNi4xOTgtNi4xNjYtMTYuMjczLTYuMTY2LTIyLjQ3LDBjLTYuMTk4LDYuMTk4LTYuMTk4LDE2LjMwNCwwLDIyLjQ3bDYzLjU2NSw2My41NjVsNS4xNDksMy40MzIgICAgbDYuMDA3LDEuMjA4aDAuMDY0bDYuMDctMS4yNGw1LjE0OS0zLjQwMWw2My41NjUtNjMuNTY1YzYuMTY2LTYuMTk4LDYuMTY2LTE2LjMwNCwwLTIyLjQ3Yy02LjE5OC02LjE5OC0xNi4zMDQtNi4xOTgtMjIuNDcsMCAgICBsLTM2LjQyMywzNi40MjNWMjU0LjI2aDE2OC4yMjVsLTM2LjQyMywzNi40MjNjLTYuMTY2LDYuMTY2LTYuMTY2LDE2LjI3MywwLDIyLjQ3YzYuMTk4LDYuMTY2LDE2LjMwNCw2LjE2NiwyMi40NywwICAgIGw2My41NjUtNjMuNTY1bDMuNDMyLTUuMTQ5bDEuMjA4LTYuMDA3di0wLjA2NEw0NzUuNDk4LDIzMi4yOTh6IiBmaWxsPSIjMDA2REYwIi8+Cgk8L2c+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==" draggable="true" class="annotator-adder drag-mode annotator-hide">'
+            ].join('\n');
+        } else {
+            Adder.template = [
+                '<div class="annotator-adder add-mode annotator-hide">',
+                    '  <button type="button">' + _t('Annotate') + '</button>',
+                '</div>'
+            ].join('\n');
+        }
 
 // Configuration options
         Adder.options = {
@@ -14918,12 +14985,18 @@
                 function start(app) {
                     var ident = app.registry.getUtility('identityPolicy');
                     var authz = app.registry.getUtility('authorizationPolicy');
-
                     s.adder = new adder.Adder({
+                        dragMode: window.dragMode,
                         onCreate: function (ann) {
                             app.annotations.create(ann);
                         }
                     });
+                    if (window.dragMode) {
+                        s.adder.changeDragMode();
+                        console.log('XXXX');
+                    } else {
+                        s.adder.changeAddMode();
+                    }
                     s.adder.attach();
 
                     s.editor = new editor.Editor({
@@ -14934,7 +15007,6 @@
                     addPermissionsCheckboxes(s.editor, ident, authz);
 
                     s.highlighter = window.HIGHLIGHTER = new highlighter.Highlighter(options.element);
-
                     s.textselector = new textselector.TextSelector(options.element, {
                         onSelection: function (ranges, event) {
                             if (ranges.length > 0) {
@@ -15931,11 +16003,21 @@
                 this.extensionsInstalled = false;
             }
 
+            
+
 // Public: Destroy the Widget, unbinding all events and removing the element.
 //
 // Returns nothing.
             Widget.prototype.destroy = function () {
                 this.element.remove();
+            };
+
+            Widget.prototype.changeDragMode = function () {
+        
+            };
+
+            Widget.prototype.changeAddMode = function () {
+              
             };
 
 // Executes all given widget-extensions
@@ -15958,6 +16040,29 @@
 // Public: Attach the widget to a css selector or element
 // Plus do any post-construction install
             Widget.prototype.attach = function () {
+                if (this.constructor.type === 'adder') {
+                    if (window.dragMode) {
+                        this.constructor.template = [
+                                '<img src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQ3Ni43MzcgNDc2LjczNyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDc2LjczNyA0NzYuNzM3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCI+CjxnPgoJPGc+CgkJPHBhdGggZD0iTTQ3NS40OTgsMjMyLjI5OGwtMy40MDEtNS4xNDlsLTYzLjU2NS02My41NjVjLTYuMTk4LTYuMTk4LTE2LjMwNC02LjE5OC0yMi40NywwICAgIGMtNi4xOTgsNi4xOTgtNi4xOTgsMTYuMjczLDAsMjIuNDdsMzYuNDIzLDM2LjQyM0gyNTQuMjZWNTQuMjUzbDM2LjQyMywzNi40MjNjNi4xNjYsNi4xOTgsMTYuMjczLDYuMTk4LDIyLjQ3LDAgICAgYzYuMTY2LTYuMTk4LDYuMTY2LTE2LjI3MywwLTIyLjQ3TDI0OS41ODgsNC42NGwtMC4xNTktMC4wOTVsLTQuOTktMy4zMDVMMjM4LjM2OSwwaC0wLjA2NGwtNi4wMDcsMS4yNGwtNC45OSwzLjMwNWwtMC4xOTEsMC4wOTUgICAgbC02My41NjUsNjMuNTY1Yy02LjE5OCw2LjE5OC02LjE5OCwxNi4yNzMsMCwyMi40N3MxNi4yNzMsNi4xOTgsMjIuNDcsMGwzNi40NTUtMzYuNDIzdjE2OC4yMjVINTQuMjUzbDM2LjQyMy0zNi40MjMgICAgYzYuMTk4LTYuMTk4LDYuMTk4LTE2LjI3MywwLTIyLjQ3cy0xNi4yNzMtNi4xOTgtMjIuNDcsMEw0LjY0LDIyNy4xNDlsLTAuMDk1LDAuMTU5bC0zLjMwNSw0Ljk5TDAsMjM4LjM2OXYwLjA2NGwxLjI0LDYuMDA3ICAgIGwzLjMwNSw0Ljk1OGwwLjA5NSwwLjE5MWw2My41NjUsNjMuNTY1YzYuMTk4LDYuMTk4LDE2LjI3Myw2LjE5OCwyMi40NywwYzYuMTk4LTYuMTY2LDYuMTk4LTE2LjI3MywwLTIyLjQ3TDU0LjI1MywyNTQuMjYgICAgaDE2OC4yMjV2MTY4LjIyNWwtMzYuNDIzLTM2LjQyM2MtNi4xOTgtNi4xNjYtMTYuMjczLTYuMTY2LTIyLjQ3LDBjLTYuMTk4LDYuMTk4LTYuMTk4LDE2LjMwNCwwLDIyLjQ3bDYzLjU2NSw2My41NjVsNS4xNDksMy40MzIgICAgbDYuMDA3LDEuMjA4aDAuMDY0bDYuMDctMS4yNGw1LjE0OS0zLjQwMWw2My41NjUtNjMuNTY1YzYuMTY2LTYuMTk4LDYuMTY2LTE2LjMwNCwwLTIyLjQ3Yy02LjE5OC02LjE5OC0xNi4zMDQtNi4xOTgtMjIuNDcsMCAgICBsLTM2LjQyMywzNi40MjNWMjU0LjI2aDE2OC4yMjVsLTM2LjQyMywzNi40MjNjLTYuMTY2LDYuMTY2LTYuMTY2LDE2LjI3MywwLDIyLjQ3YzYuMTk4LDYuMTY2LDE2LjMwNCw2LjE2NiwyMi40NywwICAgIGw2My41NjUtNjMuNTY1bDMuNDMyLTUuMTQ5bDEuMjA4LTYuMDA3di0wLjA2NEw0NzUuNDk4LDIzMi4yOTh6IiBmaWxsPSIjMDA2REYwIi8+Cgk8L2c+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==" draggable="true" class="annotator-adder drag-mode annotator-hide">'
+                        ].join('\n');
+                    } else {
+                        this.constructor.template = [
+                            '<div class="annotator-adder add-mode annotator-hide">',
+                                '  <button type="button">' + _t('Annotate') + '</button>',
+                            '</div>'
+                        ].join('\n');
+                    }
+                    this.element = $(this.constructor.template);
+                    this.classes = $.extend({}, Widget.classes, this.constructor.classes);
+                    this.options = $.extend(
+                        {},
+                        Widget.options,
+                        this.constructor.options,
+                        options
+                    );
+                    this.extensionsInstalled = false;
+                }
+          
                 this.element.appendTo(this.options.appendTo);
                 this._maybeInstallExtensions();
             };
@@ -16005,8 +16110,8 @@
                         right: $win.width() + $win.scrollLeft()
                     },
                     current = {
-                        top: offset.top,
-                        right: offset.left + $widget.width()
+                        top: offset?offset.top:0,
+                        right: offset?(offset.left + $widget.width()):$widget.width()
                     };
 
                 if ((current.top - viewport.top) < 0) {
