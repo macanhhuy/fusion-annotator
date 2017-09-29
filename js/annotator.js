@@ -13289,11 +13289,19 @@
             // Returns nothing.
             show: function (position) {
                 if (typeof position !== 'undefined' && position !== null) {
+                   if (window.dragMode) {
+                    this.element.css({
+                        top: position.top + 40,
+                        left: position.left + 20
+                    });
+                   }
+                   else {
                     this.element.css({
                         top: position.top,
                         left: position.left
                     });
-                }
+                     }
+                } 
                 Widget.prototype.show.call(this);
             },
 
