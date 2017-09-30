@@ -15056,11 +15056,21 @@
                     start: start,
 
                     destroy: function () {
-                        s.adder.destroy();
-                        s.editor.destroy();
-                        s.highlighter.destroy();
-                        s.textselector.destroy();
-                        s.viewer.destroy();
+                        if (s.adder) {
+                            s.adder.destroy();
+                        }
+                        if (s.editor) {
+                            s.editor.destroy();
+                        }
+                        if (s.highlighter) {
+                            s.highlighter.destroy();
+                        }
+                        if (s.textselector) {
+                            s.textselector.destroy();
+                        }
+                        if (s.viewer) {
+                            s.viewer.destroy();
+                        }
                         removeDynamicStyle();
                     },
 
