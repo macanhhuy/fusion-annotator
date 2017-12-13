@@ -4080,23 +4080,23 @@
             /*
              * Create a callback list using the following parameters:
              *
-             *  options: an optional list of space-separated options that will change how
-             *          the callback list behaves or a more traditional option object
+             *	options: an optional list of space-separated options that will change how
+             *			the callback list behaves or a more traditional option object
              *
              * By default a callback list will act like an event callback list and can be
              * "fired" multiple times.
              *
              * Possible options:
              *
-             *  once:           will ensure the callback list can only be fired once (like a Deferred)
+             *	once:			will ensure the callback list can only be fired once (like a Deferred)
              *
-             *  memory:         will keep track of previous values and will call any callback added
-             *                  after the list has been fired right away with the latest "memorized"
-             *                  values (like a Deferred)
+             *	memory:			will keep track of previous values and will call any callback added
+             *					after the list has been fired right away with the latest "memorized"
+             *					values (like a Deferred)
              *
-             *  unique:         will ensure a callback can only be added once (no duplicate in the list)
+             *	unique:			will ensure a callback can only be added once (no duplicate in the list)
              *
-             *  stopOnFalse:    interrupt callings when a callback returns false
+             *	stopOnFalse:	interrupt callings when a callback returns false
              *
              */
             jQuery.Callbacks = function (options) {
@@ -13207,7 +13207,8 @@
             changeDragMode: function() {
                 Widget.prototype.changeDragMode.call(this);
                 this.template = [
-                    '<span draggable="true" class="annotator-adder drag-mode material-icons annotator-hide">pan_tool</span>'
+                    '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAmElEQVR4AWPACYoZngExCeAzw38gJkKjNEMaEDMAlQMhXCMecAao4DRMA5zGBeAKMGmE0whrQDiNgAZMelhrwIQUaWBmqGCYySBPvIZFYOYPhlYGXuI0RDP8g3KfMyQS54d4qBbCEA6SiNWAAGnEakCAbGI1IEA+AeXPsGR9vBqWYYvpMpzK3zHIYM+kTgwHGT5jOGYZRDkAE5FAUXW7HNAAAAAASUVORK5CYII=
+" draggable="true" class="annotator-adder drag-mode annotator-hide">'
             ].join('\n');
                 this.element = $(this.template);
                 this.ignoreMouseup = false;
@@ -13390,7 +13391,8 @@
    
         if (window.dragMode) {
             Adder.template = [
-                    '<span draggable="true" class="annotator-adder drag-mode material-icons annotator-hide">pan_tool</span>'
+                    '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAmElEQVR4AWPACYoZngExCeAzw38gJkKjNEMaEDMAlQMhXCMecAao4DRMA5zGBeAKMGmE0whrQDiNgAZMelhrwIQUaWBmqGCYySBPvIZFYOYPhlYGXuI0RDP8g3KfMyQS54d4qBbCEA6SiNWAAGnEakCAbGI1IEA+AeXPsGR9vBqWYYvpMpzK3zHIYM+kTgwHGT5jOGYZRDkAE5FAUXW7HNAAAAAASUVORK5CYII=
+" draggable="true" class="annotator-adder drag-mode annotator-hide">'
             ].join('\n');
         } else {
             Adder.template = [
@@ -16061,7 +16063,8 @@
                 if (this.constructor.type === 'adder') {
                     if (window.dragMode) {
                         this.constructor.template = [
-                                '<img src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQ3Ni43MzcgNDc2LjczNyIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDc2LjczNyA0NzYuNzM3OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjMycHgiIGhlaWdodD0iMzJweCI+CjxnPgoJPGc+CgkJPHBhdGggZD0iTTQ3NS40OTgsMjMyLjI5OGwtMy40MDEtNS4xNDlsLTYzLjU2NS02My41NjVjLTYuMTk4LTYuMTk4LTE2LjMwNC02LjE5OC0yMi40NywwICAgIGMtNi4xOTgsNi4xOTgtNi4xOTgsMTYuMjczLDAsMjIuNDdsMzYuNDIzLDM2LjQyM0gyNTQuMjZWNTQuMjUzbDM2LjQyMywzNi40MjNjNi4xNjYsNi4xOTgsMTYuMjczLDYuMTk4LDIyLjQ3LDAgICAgYzYuMTY2LTYuMTk4LDYuMTY2LTE2LjI3MywwLTIyLjQ3TDI0OS41ODgsNC42NGwtMC4xNTktMC4wOTVsLTQuOTktMy4zMDVMMjM4LjM2OSwwaC0wLjA2NGwtNi4wMDcsMS4yNGwtNC45OSwzLjMwNWwtMC4xOTEsMC4wOTUgICAgbC02My41NjUsNjMuNTY1Yy02LjE5OCw2LjE5OC02LjE5OCwxNi4yNzMsMCwyMi40N3MxNi4yNzMsNi4xOTgsMjIuNDcsMGwzNi40NTUtMzYuNDIzdjE2OC4yMjVINTQuMjUzbDM2LjQyMy0zNi40MjMgICAgYzYuMTk4LTYuMTk4LDYuMTk4LTE2LjI3MywwLTIyLjQ3cy0xNi4yNzMtNi4xOTgtMjIuNDcsMEw0LjY0LDIyNy4xNDlsLTAuMDk1LDAuMTU5bC0zLjMwNSw0Ljk5TDAsMjM4LjM2OXYwLjA2NGwxLjI0LDYuMDA3ICAgIGwzLjMwNSw0Ljk1OGwwLjA5NSwwLjE5MWw2My41NjUsNjMuNTY1YzYuMTk4LDYuMTk4LDE2LjI3Myw2LjE5OCwyMi40NywwYzYuMTk4LTYuMTY2LDYuMTk4LTE2LjI3MywwLTIyLjQ3TDU0LjI1MywyNTQuMjYgICAgaDE2OC4yMjV2MTY4LjIyNWwtMzYuNDIzLTM2LjQyM2MtNi4xOTgtNi4xNjYtMTYuMjczLTYuMTY2LTIyLjQ3LDBjLTYuMTk4LDYuMTk4LTYuMTk4LDE2LjMwNCwwLDIyLjQ3bDYzLjU2NSw2My41NjVsNS4xNDksMy40MzIgICAgbDYuMDA3LDEuMjA4aDAuMDY0bDYuMDctMS4yNGw1LjE0OS0zLjQwMWw2My41NjUtNjMuNTY1YzYuMTY2LTYuMTk4LDYuMTY2LTE2LjMwNCwwLTIyLjQ3Yy02LjE5OC02LjE5OC0xNi4zMDQtNi4xOTgtMjIuNDcsMCAgICBsLTM2LjQyMywzNi40MjNWMjU0LjI2aDE2OC4yMjVsLTM2LjQyMywzNi40MjNjLTYuMTY2LDYuMTY2LTYuMTY2LDE2LjI3MywwLDIyLjQ3YzYuMTk4LDYuMTY2LDE2LjMwNCw2LjE2NiwyMi40NywwICAgIGw2My41NjUtNjMuNTY1bDMuNDMyLTUuMTQ5bDEuMjA4LTYuMDA3di0wLjA2NEw0NzUuNDk4LDIzMi4yOTh6IiBmaWxsPSIjMDA2REYwIi8+Cgk8L2c+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==" draggable="true" class="annotator-adder drag-mode annotator-hide">'
+                                '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAmElEQVR4AWPACYoZngExCeAzw38gJkKjNEMaEDMAlQMhXCMecAao4DRMA5zGBeAKMGmE0whrQDiNgAZMelhrwIQUaWBmqGCYySBPvIZFYOYPhlYGXuI0RDP8g3KfMyQS54d4qBbCEA6SiNWAAGnEakCAbGI1IEA+AeXPsGR9vBqWYYvpMpzK3zHIYM+kTgwHGT5jOGYZRDkAE5FAUXW7HNAAAAAASUVORK5CYII=
+" draggable="true" class="annotator-adder drag-mode annotator-hide">'
                         ].join('\n');
                     } else {
                         this.constructor.template = [
