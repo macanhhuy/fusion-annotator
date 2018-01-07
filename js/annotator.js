@@ -13207,7 +13207,7 @@
             changeDragMode: function() {
                 Widget.prototype.changeDragMode.call(this);
                 this.template = [
-                    '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAmElEQVR4AWPACYoZngExCeAzw38gJkKjNEMaEDMAlQMhXCMecAao4DRMA5zGBeAKMGmE0whrQDiNgAZMelhrwIQUaWBmqGCYySBPvIZFYOYPhlYGXuI0RDP8g3KfMyQS54d4qBbCEA6SiNWAAGnEakCAbGI1IEA+AeXPsGR9vBqWYYvpMpzK3zHIYM+kTgwHGT5jOGYZRDkAE5FAUXW7HNAAAAAASUVORK5CYII==" draggable="true" class="annotator-adder drag-mode annotator-hide">'
+                    '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAmElEQVR4AWPACYoZngExCeAzw38gJkKjNEMaEDMAlQMhXCMecAao4DRMA5zGBeAKMGmE0whrQDiNgAZMelhrwIQUaWBmqGCYySBPvIZFYOYPhlYGXuI0RDP8g3KfMyQS54d4qBbCEA6SiNWAAGnEakCAbGI1IEA+AeXPsGR9vBqWYYvpMpzK3zHIYM+kTgwHGT5jOGYZRDkAE5FAUXW7HNAAAAAASUVORK5CYII=" draggable="true" class="annotator-adder drag-mode annotator-hide">'
             ].join('\n');
                 this.element = $(this.template);
                 this.ignoreMouseup = false;
@@ -13390,7 +13390,7 @@
    
         if (window.dragMode) {
             Adder.template = [
-                    '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAmElEQVR4AWPACYoZngExCeAzw38gJkKjNEMaEDMAlQMhXCMecAao4DRMA5zGBeAKMGmE0whrQDiNgAZMelhrwIQUaWBmqGCYySBPvIZFYOYPhlYGXuI0RDP8g3KfMyQS54d4qBbCEA6SiNWAAGnEakCAbGI1IEA+AeXPsGR9vBqWYYvpMpzK3zHIYM+kTgwHGT5jOGYZRDkAE5FAUXW7HNAAAAAASUVORK5CYII==" draggable="true" class="annotator-adder drag-mode annotator-hide">'
+                    '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAmElEQVR4AWPACYoZngExCeAzw38gJkKjNEMaEDMAlQMhXCMecAao4DRMA5zGBeAKMGmE0whrQDiNgAZMelhrwIQUaWBmqGCYySBPvIZFYOYPhlYGXuI0RDP8g3KfMyQS54d4qBbCEA6SiNWAAGnEakCAbGI1IEA+AeXPsGR9vBqWYYvpMpzK3zHIYM+kTgwHGT5jOGYZRDkAE5FAUXW7HNAAAAAASUVORK5CYII=" draggable="true" class="annotator-adder drag-mode annotator-hide">'
             ].join('\n');
         } else {
             Adder.template = [
@@ -16061,7 +16061,7 @@
                 if (this.constructor.type === 'adder') {
                     if (window.dragMode) {
                         this.constructor.template = [
-                                '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAmElEQVR4AWPACYoZngExCeAzw38gJkKjNEMaEDMAlQMhXCMecAao4DRMA5zGBeAKMGmE0whrQDiNgAZMelhrwIQUaWBmqGCYySBPvIZFYOYPhlYGXuI0RDP8g3KfMyQS54d4qBbCEA6SiNWAAGnEakCAbGI1IEA+AeXPsGR9vBqWYYvpMpzK3zHIYM+kTgwHGT5jOGYZRDkAE5FAUXW7HNAAAAAASUVORK5CYII==" draggable="true" class="annotator-adder drag-mode annotator-hide">'
+                                '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAQAAABKfvVzAAAAmElEQVR4AWPACYoZngExCeAzw38gJkKjNEMaEDMAlQMhXCMecAao4DRMA5zGBeAKMGmE0whrQDiNgAZMelhrwIQUaWBmqGCYySBPvIZFYOYPhlYGXuI0RDP8g3KfMyQS54d4qBbCEA6SiNWAAGnEakCAbGI1IEA+AeXPsGR9vBqWYYvpMpzK3zHIYM+kTgwHGT5jOGYZRDkAE5FAUXW7HNAAAAAASUVORK5CYII=" draggable="true" class="annotator-adder drag-mode annotator-hide">'
                         ].join('\n');
                     } else {
                         this.constructor.template = [
