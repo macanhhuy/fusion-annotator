@@ -14363,8 +14363,9 @@
             if (next.length === 0) {
                 next = active.eq(resetOffset);
             }
-
-            this._scrollToHighlight(next.data('annotation')._local.highlights);
+            if (next.data('annotation')) {
+                this._scrollToHighlight(next.data('annotation')._local.highlights);
+            }
         };
 
 // Locates the next highlighted element in this.highlights from the current one
